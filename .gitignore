@@ -1,2 +1,8 @@
 # Env files
 .env
+
+# Terraform sensitive files
+*.tfstate
+.terraform/
+*.tfvars
+.terraform.lock.hcl

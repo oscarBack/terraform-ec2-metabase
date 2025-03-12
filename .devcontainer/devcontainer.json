@@ -5,5 +5,17 @@
 		"ghcr.io/devcontainers/features/terraform:1": {},
 		"ghcr.io/devcontainers-extra/features/infracost:1": {}
 	},
-	"runArgs": ["--env-file", ".devcontainer/.env"]
+	"runArgs": ["--env-file", ".devcontainer/.env"],
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"chouzz.vscode-better-align",
+				"4ops.terraform",
+				"hashicorp.terraform",
+				"lukepearson.cidr-ip-range",
+				"fchieze.terraformer",
+				"infracost.infracost"
+			]
+		}
+	}
 }
