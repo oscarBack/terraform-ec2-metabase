@@ -15,7 +15,6 @@ variable "igw_public_id" {}
 variable "subnet_id" {}
 variable "project_name" {
     description = "The name of the project"
-    default     = "metabase5"
 }
 
 variable "db_username" {
