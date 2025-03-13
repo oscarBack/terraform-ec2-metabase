@@ -17,6 +17,7 @@ jobs:
           persist-credentials: false
       - name: Semantic Release
         uses: cycjimmy/semantic-release-action@v4
-        with: 1.0.0
+        with:
+          semantic_version: 1.0.0
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
