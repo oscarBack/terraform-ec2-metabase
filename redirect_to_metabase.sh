@@ -30,7 +30,7 @@ server {
     listen 80;
     listen [::]:80;
     server_name ${metabase_domain};
-    return 301 https://$server_name$request_uri;
+    return 301 https://${metabase_domain}$request_uri;
 }
 
 server { 
