@@ -2,20 +2,31 @@ name: Release
 
 on:
   push:
-    paths:
-      - '.github/workflows/release.yml'
+    branches:
+      - main
 
 jobs:
-  main:
+  release:
+    name: Release
     runs-on: ubuntu-latest
-    environment:
-      name: prod
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-      - name: Semantic Release
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Release
         uses: cycjimmy/semantic-release-action@v4
         with:
-          semantic_version: 1.0.0
+          semantic_version: 19.0.5  # Specify semantic-release version
+          extra_plugins: |
+            @semantic-release/git
+            @semantic-release/changelog
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
