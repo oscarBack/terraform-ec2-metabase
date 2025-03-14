@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/oscarBack/terraform-ec2-metabase/compare/v1.0.1...v1.0.2) (2025-03-14)
+
+
+### Bug Fixes
+
+* **core:** update variable usage for metabase domain in redirect script ([386c5e6](https://github.com/oscarBack/terraform-ec2-metabase/commit/386c5e6549dc854bd442fc7b2769754973000517))
+
 ## [1.0.1](https://github.com/oscarBack/terraform-ec2-metabase/compare/v1.0.0...v1.0.1) (2025-03-13)
 
 
