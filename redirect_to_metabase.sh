@@ -1,6 +1,7 @@
 #!/bin/bash
 
 LOG_FILE="/var/log/redirect_to_metabase.log"
+metabase_domain="${metabase_domain}"
 
 # Function to log messages
 log() {
@@ -29,17 +30,17 @@ cat << EOF | sudo tee "$NGINX_CONF"
 server {
     listen 80;
     listen [::]:80;
-    server_name ${metabase_domain};
-    return 301 https://${metabase_domain}$request_uri;
+    server_name $metabase_domain;
+    return 301 https://$metabase_domain$request_uri;
 }
 
 server { 
-    server_name ${metabase_domain};
+    server_name $metabase_domain;
 
     listen [::]:443 ssl ipv6only=on; # managed by Certbot
     listen 443 ssl; # managed by Certbot
-    ssl_certificate /etc/letsencrypt/live/${metabase_domain}/fullchain.pem; # managed by Certbot
-    ssl_certificate_key /etc/letsencrypt/live/${metabase_domain}/privkey.pem; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/$metabase_domain/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/$metabase_domain/privkey.pem; # managed by Certbot
     include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
 
