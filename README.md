@@ -30,6 +30,7 @@ module "metabase_server" {
     email           = var.email
     db_host         = module.rds_instance.db_instance_endpoint
     metabase_domain = var.metabase_domain
+    metabase_version = var.metabase_version
 }
 ```
 
@@ -72,6 +73,7 @@ The EC2 instance is provisioned with scripts that:
 | email | Email address for SSL notifications | `string` | n/a | yes |
 | db_host | Database host endpoint | `string` | n/a | yes |
 | metabase_domain | Domain for Metabase | `string` | n/a | yes |
+| metabase_version | Metabase Docker image tag | `string` | `"v0.52.6.x"` | no |
 
 HTTP and HTTPS remain public from `0.0.0.0/0` by design so Metabase, redirects, and Let's Encrypt remain reachable. Only SSH access is restricted via `ssh_ingress_cidr`.
 

@@ -66,3 +66,14 @@ variable "metabase_domain" {
   description = "Domain for Metabase"
   type        = string
 }
+
+variable "metabase_version" {
+  description = "Metabase Docker image tag"
+  type        = string
+  default     = "v0.52.6.x"
+
+  validation {
+    condition     = can(regex("^[A-Za-z0-9_][A-Za-z0-9_.-]{0,127}$", var.metabase_version))
+    error_message = "metabase_version must be a valid Docker image tag."
+  }
+}

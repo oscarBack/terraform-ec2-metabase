@@ -165,5 +165,6 @@ module "metabase_server" {
   email            = var.email
   db_host          = module.rds_instance.db_instance_endpoint
   metabase_domain  = var.metabase_domain
+  metabase_version = var.metabase_version
   # ssh_ingress_cidr = "203.0.113.10/32"
 }

@@ -6,6 +6,8 @@ LOG_FILE="/var/log/install_docker.log"
 
 # shellcheck disable=SC2154
 db_connection_uri="jdbc:postgresql://${db_username}:${db_password}@${db_host}:5432/metabase"
+# shellcheck disable=SC2154
+metabase_image="metabase/metabase:${metabase_version}"
 
 log() {
     echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" >> "$LOG_FILE"
@@ -93,7 +95,7 @@ wait_for_apt || fail "apt lock wait failed"
 retry_command sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin || fail "Docker Engine installation failed"
 
 log "Pulling Metabase image"
-retry_command sudo docker pull metabase/metabase:v0.52.6.x || fail "Failed to pull Metabase image"
+retry_command sudo docker pull "$metabase_image" || fail "Failed to pull Metabase image"
 
 log "Starting Metabase container"
 log "Database host: ${db_host}"
@@ -101,6 +103,6 @@ log "Database host: ${db_host}"
 retry_command sudo docker run -d --restart always -p 3000:3000 \
   -e "MB_DB_TYPE=postgres" \
     -e "MB_DB_CONNECTION_URI=$db_connection_uri" \
-  --name metabase metabase/metabase:v0.52.6.x || fail "Failed to start Metabase container"
+    --name metabase "$metabase_image" || fail "Failed to start Metabase container"
 
 log "Docker installation and Metabase setup completed successfully"

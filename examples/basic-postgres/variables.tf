@@ -45,6 +45,12 @@ variable "metabase_domain" {
   type        = string
 }
 
+variable "metabase_version" {
+  description = "Metabase Docker image tag"
+  type        = string
+  default     = "v0.52.6.x"
+}
+
 variable "root_domain" {
   description = "The root domain to use for the project, ex: example.com."
   type        = string

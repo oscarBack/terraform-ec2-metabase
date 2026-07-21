@@ -72,9 +72,10 @@ data "cloudinit_config" "server_config" {
     filename     = "install_docker.sh"
     content_type = "text/x-shellscript"
     content = templatefile("${path.module}/install_docker.sh", {
-      db_username = var.db_username
-      db_password = var.db_password
-      db_host     = var.db_host
+      db_username      = var.db_username
+      db_password      = var.db_password
+      db_host          = var.db_host
+      metabase_version = var.metabase_version
     })
   }
 
