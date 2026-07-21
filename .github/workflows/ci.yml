@@ -1,0 +1,32 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.15.8
+      - uses: terraform-linters/setup-tflint@v4
+        with:
+          tflint_version: v0.64.0
+      - name: Terraform fmt
+        run: terraform fmt -check -recursive
+      - name: Terraform validate module
+        run: terraform init -backend=false -input=false && terraform validate
+      - name: Terraform validate example
+        run: |
+          cd examples/basic-postgres
+          terraform init -backend=false -input=false
+          terraform validate
+      - name: TFLint
+        run: tflint --init && tflint --recursive
+      - name: ShellCheck
+        run: shellcheck install_docker.sh activate_ssl.sh redirect_to_metabase.sh install_psql.sh

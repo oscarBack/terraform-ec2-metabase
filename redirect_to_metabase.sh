@@ -1,40 +1,43 @@
 #!/bin/bash
+set -euo pipefail
+IFS=$'\n\t'
 
 LOG_FILE="/var/log/redirect_to_metabase.log"
+# shellcheck disable=SC2269
 metabase_domain="${metabase_domain}"
 
-# Function to log messages
 log() {
-    echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" >> $LOG_FILE
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" >> "$LOG_FILE"
 }
 
-# Function to execute a command and log its success or failure
 execute() {
     if "$@"; then
-        log "SUCCESS: $*"
+        log "SUCCESS: $${1:-command}"
     else
-        log "FAILURE: $*"
+        log "FAILURE: $${1:-command}"
         exit 1
     fi
 }
 
-# Redirect output and errors to log file
+trap 'log "ERROR: unexpected failure at line $${LINENO}"' ERR
+
 exec &> >(tee -a "$LOG_FILE")
+
+: "$${metabase_domain:?metabase_domain must be set}"
 
 log "Starting Redirect to Metabase"
 
 NGINX_CONF="/etc/nginx/sites-available/default"
 
-# Create Nginx configuration
-cat << EOF | sudo tee "$NGINX_CONF"
+cat <<EOF | sudo tee "$NGINX_CONF"
 server {
     listen 80;
     listen [::]:80;
     server_name $metabase_domain;
-    return 301 https://$metabase_domain$request_uri;
+    return 301 https://$metabase_domain\$request_uri;
 }
 
-server { 
+server {
     server_name $metabase_domain;
 
     listen [::]:443 ssl ipv6only=on; # managed by Certbot
@@ -47,15 +50,11 @@ server {
     location / {
       proxy_pass http://127.0.0.1:3000;
     }
-
 }
 EOF
 
 log "Created Nginx configuration file"
-# Test Nginx configuration
 execute sudo nginx -t
-
-# Reload Nginx to apply changes
 execute sudo systemctl reload nginx
 
 log "Completed Metabase redirect configuration"

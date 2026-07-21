@@ -1,5 +1,14 @@
 
 terraform {
+  required_version = ">= 1.3.0"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 5.0"
+    }
+  }
+
   cloud {
     organization = "example"
 
@@ -144,15 +153,17 @@ module "rds_instance" {
 ################################
 
 module "metabase_server" {
-  source          = "../../"
-  vpc             = data.aws_vpc.default
-  instance_type   = "t3a.small"
-  igw_public_id   = var.igw_public_id
-  zone_domain     = data.aws_route53_zone.selected
-  project_name    = var.project_name
-  db_username     = var.db_username
-  db_password     = var.db_password
-  email           = var.email
-  db_host         = module.rds_instance.db_instance_endpoint
-  metabase_domain = var.metabase_domain
+  source           = "../../"
+  vpc              = data.aws_vpc.default
+  instance_type    = "t3a.small"
+  igw_public_id    = var.igw_public_id
+  zone_domain      = data.aws_route53_zone.selected
+  project_name     = var.project_name
+  ssh_ingress_cidr = var.ssh_ingress_cidr
+  db_username      = var.db_username
+  db_password      = var.db_password
+  email            = var.email
+  db_host          = module.rds_instance.db_instance_endpoint
+  metabase_domain  = var.metabase_domain
+  # ssh_ingress_cidr = "203.0.113.10/32"
 }

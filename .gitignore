@@ -6,3 +6,8 @@
 .terraform/
 *.tfvars
 .terraform.lock.hcl
+# Local AI runtime state
+.atl/
+AGENTS.md
+.config/
+.copilot/

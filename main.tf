@@ -1,10 +1,25 @@
+terraform {
+  required_version = ">= 1.3.0"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 5.0"
+    }
+    cloudinit = {
+      source  = "hashicorp/cloudinit"
+      version = ">= 2.0"
+    }
+  }
+}
+
 resource "aws_security_group" "web_sg" {
   name        = "web_sg-${var.project_name}"
   description = "Allow inbound traffic on ports 80 and 443"
   vpc_id      = var.vpc.id
 
-  lifecycle { 
-    create_before_destroy = true 
+  lifecycle {
+    create_before_destroy = true
   }
 }
 
@@ -29,7 +44,7 @@ resource "aws_vpc_security_group_ingress_rule" "ssh" {
   from_port         = 22
   to_port           = 22
   ip_protocol       = "tcp"
-  cidr_ipv4         = "0.0.0.0/0"
+  cidr_ipv4         = var.ssh_ingress_cidr
 }
 
 resource "aws_vpc_security_group_egress_rule" "all" {
@@ -46,7 +61,7 @@ data "cloudinit_config" "server_config" {
   part {
     filename     = "activate_ssl.sh"
     content_type = "text/x-shellscript"
-    content      = templatefile("${path.module}/activate_ssl.sh", {
+    content = templatefile("${path.module}/activate_ssl.sh", {
       metabase_domain = var.metabase_domain
       email           = var.email
     })
@@ -56,7 +71,7 @@ data "cloudinit_config" "server_config" {
   part {
     filename     = "install_docker.sh"
     content_type = "text/x-shellscript"
-    content      = templatefile("${path.module}/install_docker.sh", {
+    content = templatefile("${path.module}/install_docker.sh", {
       db_username = var.db_username
       db_password = var.db_password
       db_host     = var.db_host
@@ -74,7 +89,7 @@ data "cloudinit_config" "server_config" {
   part {
     filename     = "redirect_to_metabase.sh"
     content_type = "text/x-shellscript"
-    content      = templatefile("${path.module}/redirect_to_metabase.sh", {
+    content = templatefile("${path.module}/redirect_to_metabase.sh", {
       metabase_domain = var.metabase_domain
     })
   }

@@ -1,5 +1,9 @@
 variable "vpc" {
   description = "The VPC object"
+  type = object({
+    id         = string
+    cidr_block = string
+  })
 }
 
 variable "instance_type" {
@@ -15,6 +19,10 @@ variable "igw_public_id" {
 
 variable "zone_domain" {
   description = "Route53 zone domain object"
+  type = object({
+    name    = string
+    zone_id = string
+  })
 }
 
 variable "project_name" {
@@ -22,14 +30,26 @@ variable "project_name" {
   type        = string
 }
 
+variable "ssh_ingress_cidr" {
+  description = "CIDR allowed to reach SSH (port 22). Example: 203.0.113.10/32"
+  type        = string
+
+  validation {
+    condition     = can(cidrnetmask(var.ssh_ingress_cidr))
+    error_message = "ssh_ingress_cidr must be a valid CIDR range such as 203.0.113.10/32."
+  }
+}
+
 variable "db_username" {
   description = "Database username"
   type        = string
+  sensitive   = true
 }
 
 variable "db_password" {
   description = "Database password"
   type        = string
+  sensitive   = true
 }
 
 variable "email" {

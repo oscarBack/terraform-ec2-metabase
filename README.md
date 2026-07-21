@@ -23,6 +23,8 @@ module "metabase_server" {
     igw_public_id   = aws_internet_gateway.example.id
     zone_domain     = data.aws_route53_zone.example
     project_name    = "metabase"
+    # ssh_ingress_cidr = "203.0.113.10/32"
+    ssh_ingress_cidr = var.ssh_ingress_cidr
     db_username     = var.db_username
     db_password     = var.db_password
     email           = var.email
@@ -66,9 +68,26 @@ The EC2 instance is provisioned with scripts that:
 | project_name | Name of the project | `string` | n/a | yes |
 | db_username | Database username | `string` | n/a | yes |
 | db_password | Database password | `string` | n/a | yes |
+| ssh_ingress_cidr | CIDR allowed to reach SSH (port 22). Example: `203.0.113.10/32` | `string` | n/a | yes |
 | email | Email address for SSL notifications | `string` | n/a | yes |
 | db_host | Database host endpoint | `string` | n/a | yes |
 | metabase_domain | Domain for Metabase | `string` | n/a | yes |
+
+HTTP and HTTPS remain public from `0.0.0.0/0` by design so Metabase, redirects, and Let's Encrypt remain reachable. Only SSH access is restricted via `ssh_ingress_cidr`.
+
+## Validation
+
+Run the following commands locally before opening a PR:
+
+```bash
+terraform fmt -check -recursive
+terraform validate
+(cd examples/basic-postgres && terraform init -backend=false -input=false && terraform validate)
+tflint --init
+# from the repository root
+tflint --recursive
+shellcheck install_docker.sh activate_ssl.sh redirect_to_metabase.sh install_psql.sh
+```
 
 ## Outputs
 
